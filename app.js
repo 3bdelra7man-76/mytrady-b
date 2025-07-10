@@ -18,6 +18,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')))
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'))
 })
+console.log('Connecting to MongoDB with URI:', process.env.MONGODB_URI);
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
