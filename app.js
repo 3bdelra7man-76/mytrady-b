@@ -29,7 +29,13 @@ app.use('/api/transfer', transferRoutes)
 app.use('/api/profile', profileRoutes)
 app.use('/api/history', historyRoutes)
 
-const port = process.env.PORT || 5000
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`)
-})
+const port = process.env.PORT; 
+if (!port) throw new Error("PORT environment variable missing!");
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server running on port ${port}`);
+});
+// Error handling middleware (add this LAST, after all routes)
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).send('Server error');
+});
