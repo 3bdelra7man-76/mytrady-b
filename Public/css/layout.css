@@ -1,0 +1,39 @@
+/* Base layout styles */
+body {
+    transition: all 0.3s ease;
+}
+
+/* RTL specific adjustments */
+html[dir="rtl"] .left-4 {
+    left: auto;
+    right: 1rem;
+}
+
+html[dir="rtl"] .right-4 {
+    right: auto;
+    left: 1rem;
+}
+
+html[dir="rtl"] .ml-2 {
+    margin-left: 0;
+    margin-right: 0.5rem;
+}
+
+html[dir="rtl"] .mr-2 {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+
+/* Text alignment in RTL */
+html[dir="rtl"] .text-left {
+    text-align: right;
+}
+
+html[dir="rtl"] .text-right {
+    text-align: left;
+}
+
+/* Transitions */
+.direction-transition {
+    transition: all 0.3s ease;
+}

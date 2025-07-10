@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>History</title>
+    <script>
+      (function() {
+        try {
+          var mode = localStorage.getItem('darkMode');
+          var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (mode === 'dark' || (!mode && systemDark)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch(e){}
+      })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <script src="js/translations.js"></script>
+    <script src="js/history.js"></script>
+    <script src="js/theme.js"></script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex flex-col lg:flex-row transition-colors duration-300">
+    <div id="navbar-container"></div>
+    <!-- Header (Mobile Only) -->
+    <div class="bg-gradient-to-br from-blue-500 to-pink-300 text-white p-4 pb-24 rounded-b-3xl shadow-md relative z-10 lg:hidden">
+        <button onclick="history.back()" class="absolute left-4 top-4 text-2xl rtl:scale-x-[-1]">
+            <i class="bi bi-arrow-left"></i>
+        </button>
+        <h1 class="text-center text-xl font-bold mt-1" data-i18n="transactionHistory">Transaction History</h1>
+    </div>
+    <!-- Main Content -->
+    <div class="flex-1 lg:ml-60">
+        <!-- Desktop Header (hidden on mobile) -->
+        <div class="hidden lg:flex bg-gradient-to-br from-blue-500 to-pink-300 text-white p-4 pb-24 rounded-b-[45px] shadow-md mx-4 max-w-3xl mx-auto"></div>
+        <!-- Content Card -->
+        <div class="bg-white dark:bg-gray-800 mx-4 lg:mx-auto -mt-16 rounded-xl shadow-md p-5 lg:p-8 max-w-2xl space-y-4 relative z-20 transition-colors duration-300">
+            <!-- Search Bar -->
+            <input type="text" data-i18n-placeholder="search" placeholder="Search..." 
+                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-full focus:outline-none focus:ring-2 focus:ring-pink-300 transition-colors duration-300">
+            <!-- Transaction List -->
+            <div id="transactionList" class="space-y-3">
+                <!-- Transactions will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+    <script>
+        // Add navbar.html to the history page
+        fetch('navbar.html')
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('navbar-container').innerHTML = html;
+                // Re-run the navbar active script after navbar loads
+                const current = window.location.pathname.split('/').pop().toLowerCase();
+                document.querySelectorAll('#navbar-container a').forEach(link => {
+                    const href = link.getAttribute('href').toLowerCase();
+                    const isActive = current === href || (current === '' && href.includes('dashboard'));
+                    if (isActive) {
+                        link.classList.add(
+                            'bg-gradient-to-r',
+                            'from-blue-400',
+                            'to-pink-400',
+                            'text-white',
+                            'shadow',
+                            'hover:scale-[1.02]'
+                        );
+                        link.classList.remove(
+                            'text-gray-600',
+                            'dark:text-gray-300',
+                            'hover:bg-gray-100',
+                            'dark:hover:bg-gray-700'
+                        );
+                    } else {
+                        link.classList.remove(
+                            'bg-gradient-to-r',
+                            'from-blue-400',
+                            'to-pink-400',
+                            'text-white',
+                            'shadow',
+                            'hover:scale-[1.02]'
+                        );
+                        link.classList.add(
+                            'text-gray-600',
+                            'dark:text-gray-300',
+                            'hover:bg-gray-100',
+                            'dark:hover:bg-gray-700'
+                        );
+                    }
+                });
+                // Translate navbar after it is loaded
+                if (typeof translatePage === 'function') {
+                    translatePage();
+                } else if (window.translatePage) {
+                    window.translatePage();
+                }
+                // Add toast for Offers (desktop)
+                const offersLink = document.querySelector('#navbar-container a.coming-soon');
+                if (offersLink) {
+                    offersLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        showComingSoonToast();
+                    });
+                }
+            });
+        // Toast for Coming Soon features (desktop)
+        function showComingSoonToast() {
+            let toast = document.getElementById('comingSoonToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'comingSoonToast';
+                toast.className = 'fixed bottom-16 left-1/2 transform -translate-x-1/2 w-48 bg-gradient-to-r from-blue-300 to-pink-300 text-white px-4 py-2 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-[9999] lg:w-[235px]';
+                toast.innerHTML = '<span>This feature is coming soon!</span>';
+                document.body.appendChild(toast);
+            }
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+            }, 2000);
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            translatePage();
+        });
+    </script>
+</body>
+</html>

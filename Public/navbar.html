@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <!-- Left Sidebar Navigation (Desktop) -->
+    <div class="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:left-0 lg:top-0 lg:bottom-0 bg-white dark:bg-gray-800 shadow-md py-8 px-4 z-50" id="navbar-container">
+    <h1 class="text-2xl font-bold ml-1 bg-gradient-to-r from-blue-500 to-pink-400 dark:from-blue-300 dark:to-pink-300 text-transparent bg-clip-text">
+        MyTrady
+    </h1>
+
+    <div class="flex flex-col space-y-4 mt-10">
+        <!-- Home -->
+        <a href="dashboard.html" class="group flex items-center space-x-3 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300">
+        <i class="bi bi-house-fill text-xl"></i>
+        <span class="font-medium" data-i18n="home">Home</span>
+        </a>
+
+        <!-- Offers -->
+        <a href="#" class="group flex items-center space-x-3 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 coming-soon">
+        <span class="text-xl">%</span>
+        <span data-i18n="offers">Offers</span>
+        </a>
+
+        <!-- Profile -->
+        <a href="profile.html" class="group flex items-center space-x-3 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300">
+        <i class="bi bi-person-fill text-xl"></i>
+        <span data-i18n="profile">Profile</span>
+        </a>
+
+        <!-- Settings -->
+        <a href="settings.html" class="group flex items-center space-x-3 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300">
+        <i class="bi bi-gear-fill text-xl"></i>
+        <span data-i18n="settings">Settings</span>
+        </a>
+    </div>
+    </div>
+    <script>
+        const current = window.location.pathname.split('/').pop().toLowerCase();
+
+        document.querySelectorAll('#navbar-container a').forEach(link => {
+            const href = link.getAttribute('href').toLowerCase();
+            const isActive = current === href || (current === '' && href.includes('dashboard'));
+
+            if (isActive) {
+            link.classList.add(
+                'bg-gradient-to-r',
+                'from-blue-400',
+                'to-pink-400',
+                'text-white',
+                'shadow',
+                'hover:scale-[1.02]'
+            );
+            link.classList.remove(
+                'text-gray-600',
+                'dark:text-gray-300',
+                'hover:bg-gray-100',
+                'dark:hover:bg-gray-700'
+            );
+            } else {
+            link.classList.remove(
+                'bg-gradient-to-r',
+                'from-blue-400',
+                'to-pink-400',
+                'text-white',
+                'shadow',
+                'hover:scale-[1.02]'
+            );
+            link.classList.add(
+                'text-gray-600',
+                'dark:text-gray-300',
+                'hover:bg-gray-100',
+                'dark:hover:bg-gray-700'
+            );
+            }
+        });
+        // Add toast for Offers (desktop)
+        const offersLink = document.querySelector('#navbar-container a.coming-soon');
+        if (offersLink) {
+            offersLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showComingSoonToast();
+            });
+        }
+        // Toast for Coming Soon features (desktop)
+        function showComingSoonToast() {
+            let toast = document.getElementById('comingSoonToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'comingSoonToast';
+                toast.className = 'fixed bottom-16 left-1/2 transform -translate-x-1/2 w-48 bg-gradient-to-r from-blue-300 to-pink-300 text-white px-4 py-2 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-[9999] lg:w-[235px]';
+                toast.innerHTML = '<span>This feature is coming soon!</span>';
+                document.body.appendChild(toast);
+            }
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+            }, 2000);
+        }
+    </script>
+
+
+</body>
+</html>

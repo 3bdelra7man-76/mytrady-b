@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Profile</title>
+    <script>
+      // Early dark mode to prevent white flash and ensure correct mode on load
+      (function() {
+        try {
+          var mode = localStorage.getItem('darkMode');
+          var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (mode === 'dark' || (!mode && systemDark)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch(e){}
+      })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <script src="js/translations.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex flex-col lg:flex-row transition-colors duration-300">
+    <div id="navbar-container"></div>
+
+    <!-- Red Header (Mobile Only) -->
+    <div class="bg-gradient-to-br from-blue-500 to-pink-300 text-white p-4 pb-24 rounded-b-3xl shadow-md relative z-10 lg:hidden">
+        <button onclick="history.back()" class="absolute left-4 top-4 text-2xl rtl:scale-x-[-1]">
+            <i class="bi bi-arrow-left"></i>
+        </button>
+        <h1 class="text-center text-xl font-bold mt-1" data-i18n="profile">Profile</h1>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 lg:ml-60">
+        <!-- Desktop Header (hidden on mobile) -->
+        <div class="hidden lg:flex bg-gradient-to-br from-blue-500 to-pink-300 text-white p-4 pb-24 rounded-b-[45px] shadow-md max-w-3xl mx-auto"></div>
+        <!-- Profile Card -->
+        <div class="bg-white dark:bg-gray-800 mx-4 lg:mx-auto -mt-16 rounded-xl shadow-md p-4 lg:p-8 max-w-2xl space-y-6 relative z-20 transition-colors duration-300">
+            <!-- Profile Info -->
+            <div class="flex flex-col items-center">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-200 to-pink-100 dark:bg-blue-900 flex items-center justify-center mb-3">
+                    <i class="bi bi-person-fill text-blue-400 text-4xl"></i>
+                </div>
+                <h2 class="font-bold text-lg dark:text-white" data-i18n="userName">User Name</h2>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">
+                    <span data-i18n="joined">Joined</span> 
+                    <span data-i18n="june">June</span>
+                </p>
+            </div>
+            <!-- Current Phone Number -->
+            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1" data-i18n="currentPhoneNumber">Current Phone Number</p>
+                <p class="font-semibold dark:text-white" dir="ltr">+20 123 456 7890</p>
+            </div>
+            <!-- Account Actions -->
+            <div class="space-y-3">
+                <button onclick="openModal('changeNumber')" class="w-full text-left p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex justify-between items-center">
+                    <span class="dark:text-white" data-i18n="changePhoneNumber">Change Phone Number</span>
+                    <i class="bi bi-chevron-right text-gray-400"></i>
+                </button>
+                <button onclick="openModal('changePassword')" class="w-full text-left p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex justify-between items-center">
+                    <span class="dark:text-white" data-i18n="changePassword">Change Password</span>
+                    <i class="bi bi-chevron-right text-gray-400"></i>
+                </button>
+                <!-- <button onclick="openModal('deleteAccount')" class="w-full text-left p-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors" data-i18n="deleteAccount">
+                    Delete Account
+                </button> -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="modalOverlay"
+        onclick="closeOnClickOutside(event)"
+        class="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 hidden transition-opacity duration-300">
+
+        <!-- Change Number Modal -->
+        <div id="changeNumberModal"
+            class="bg-white dark:bg-gray-800 w-11/12 max-w-sm rounded-2xl p-5 shadow-lg relative text-center space-y-4 transform scale-95 opacity-0 transition-all duration-300 hidden">
+            <button onclick="closeModal()" class="absolute top-2 right-3 text-gray-400 hover:text-red-600 dark:hover:text-red-400 text-xl">
+                &times;
+            </button>
+
+            <h2 class="text-lg font-bold text-blue-400 dark:text-red-400" data-i18n="changePhoneNumber">Change Phone Number</h2>
+            
+            <div class="space-y-3 text-left">
+                <div>                    <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1" data-i18n="currentPhoneNumber">Current Number</label>
+                    <p class="font-semibold dark:text-white" dir="ltr">+20 123 456 7890</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1" data-i18n="newNumber">New Number</label>
+                    <input type="tel" data-i18n-placeholder="enterNewPhoneNumber" placeholder="Enter new phone number" 
+                           class="w-full px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300">
+                </div>
+                
+                <div>
+                    <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1" data-i18n="password">Password</label>
+                    <input type="password" data-i18n-placeholder="enterYourPassword" placeholder="Enter your password" 
+                           class="w-full px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300">
+                </div>
+            </div>
+
+            <button class="w-full bg-gradient-to-br from-blue-500 to-pink-300 text-white py-2 rounded-full font-semibold transition" data-i18n="updateNumber">
+                Update Number
+            </button>
+        </div>
+
+        <!-- Change Password Modal -->
+        <div id="changePasswordModal"
+            class="bg-white dark:bg-gray-800 w-11/12 max-w-sm rounded-2xl p-5 shadow-lg relative text-center space-y-4 transform scale-95 opacity-0 transition-all duration-300 hidden">
+            <button onclick="closeModal()" class="absolute top-2 right-3 text-gray-400 hover:text-red-600 dark:hover:text-red-400 text-xl">
+                &times;
+            </button>
+
+            <h2 class="text-lg font-bold text-blue-400" data-i18n="changePassword">Change Password</h2>
+            
+            <div class="space-y-3 text-left">
+                <div>
+                    <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1" data-i18n="oldPassword">Current Password</label>
+                    <input type="password" placeholder="Enter current password" 
+                           class="w-full px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300">
+                </div>
+                
+                <div>
+                    <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1" data-i18n="newPassword">New Password</label>
+                    <input type="password" placeholder="Enter new password" 
+                           class="w-full px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300">
+                </div>
+                
+                <div>
+                    <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1" data-i18n="confirmNewPassword">Confirm New Password</label>
+                    <input type="password" placeholder="Confirm new password" 
+                           class="w-full px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300">
+                </div>
+            </div>
+
+            <button class="w-full bg-gradient-to-br from-blue-500 to-pink-300 text-white py-2 rounded-full font-semibold transition" data-i18n="updatePassword">
+                Update Password
+            </button>
+        </div>
+
+        <!-- Delete Account Modal -->
+        <div id="deleteAccountModal"
+            class="bg-white dark:bg-gray-800 w-11/12 max-w-sm rounded-2xl p-5 shadow-lg relative text-center space-y-4 transform scale-95 opacity-0 transition-all duration-300 hidden">
+            <button onclick="closeModal()" class="absolute top-2 right-3 text-gray-400 hover:text-red-600 dark:hover:text-red-400 text-xl">
+                &times;
+            </button>
+
+            <div class="w-16 h-16 mx-auto rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center mb-3">
+                <i class="bi bi-exclamation-triangle-fill text-red-600 dark:text-red-300 text-2xl"></i>
+            </div>
+
+            <h2 class="text-lg font-bold text-red-600 dark:text-red-400" data-i18n="deleteAccount">Delete Account</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400" data-i18n="deleteAccountWarning">This action cannot be undone. All your data and points will be permanently deleted.</p>
+            
+            <div class="space-y-3 text-left">
+                <div>
+                    <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1" data-i18n="password">Password</label>
+                    <input type="password" placeholder="Enter your password" 
+                           class="w-full px-4 py-2 border dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600">
+                </div>
+                
+                <div class="flex items-start">
+                  <input type="checkbox" id="confirmDelete" class="mt-1 mr-2">
+                  <label for="confirmDelete" class="text-sm text-gray-700 dark:text-gray-300" data-i18n="deleteAccountWarning">I understand this action is irreversible</label>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeModal(); clearDeleteAccountFields();" class="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 rounded-full font-semibold transition" data-i18n="cancel">
+                  Cancel
+                </button>
+                <button class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-full font-semibold transition" data-i18n="deleteAccount">
+                  Delete Account
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast"
+      class="fixed bottom-6 left-1/2 transform -translate-x-1/2 text-white px-4 py-2 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-[9999]">
+      Copied to clipboard!
+    </div>
+
+    <script>
+      // Modal functions
+      function openModal(type) {
+        const overlay = document.getElementById("modalOverlay");
+        overlay.classList.remove("hidden");
+
+        // Hide all modals first
+        document.querySelectorAll('[id$="Modal"]').forEach(modal => {
+          modal.classList.add("hidden");
+        });
+
+        // Show the requested modal
+        const modal = document.getElementById(`${type}Modal`);
+        modal.classList.remove("hidden");
+
+        // Animate in
+        requestAnimationFrame(() => {
+          overlay.classList.remove("opacity-0");
+          modal.classList.remove("opacity-0", "scale-95");
+          modal.classList.add("opacity-100", "scale-100");
+        });
+      }
+
+      function closeModal() {
+        const overlay = document.getElementById("modalOverlay");
+        const modals = document.querySelectorAll('[id$="Modal"]');
+
+        // Animate out
+        modals.forEach(modal => {
+          modal.classList.remove("opacity-100", "scale-100");
+          modal.classList.add("opacity-0", "scale-95");
+        });
+
+        setTimeout(() => {
+          overlay.classList.add("hidden");
+          modals.forEach(modal => modal.classList.add("hidden"));
+        }, 300);
+      }
+
+      function closeOnClickOutside(event) {
+        if (event.target.id === "modalOverlay") {
+          closeModal();
+        }
+      }
+
+      function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.remove("opacity-0");
+        toast.classList.add("opacity-100");
+
+        setTimeout(() => {
+          toast.classList.remove("opacity-100");
+          toast.classList.add("opacity-0");
+        }, 2000);
+      }
+
+      function clearDeleteAccountFields() {
+        const modal = document.getElementById('deleteAccountModal');
+        if (modal) {
+          const passwordInput = modal.querySelector('input[placeholder=\'Enter your password\']');
+          const confirmCheckbox = modal.querySelector('#confirmDelete');
+          if (passwordInput) passwordInput.value = '';
+          if (confirmCheckbox) confirmCheckbox.checked = false;
+        }
+      }
+
+      // Dark mode toggle from settings (if needed)
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', () => {
+          document.documentElement.classList.toggle('dark');
+          localStorage.setItem('darkMode', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        });
+      }
+
+      // Add navbar.html to the profile page
+      fetch('navbar.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('navbar-container').innerHTML = html;
+          // Re-run the navbar active script after navbar loads
+          const current = window.location.pathname.split('/').pop().toLowerCase();
+          document.querySelectorAll('#navbar-container a').forEach(link => {
+            const href = link.getAttribute('href').toLowerCase();
+            const isActive = current === href || (current === '' && href.includes('dashboard'));
+            if (isActive) {
+              link.classList.add(
+                'bg-gradient-to-r',
+                'from-blue-400',
+                'to-pink-400',
+                'text-white',
+                'shadow',
+                'hover:scale-[1.02]'
+              );
+              link.classList.remove(
+                'text-gray-600',
+                'dark:text-gray-300',
+                'hover:bg-gray-100',
+                'dark:hover:bg-gray-700'
+              );
+            } else {
+              link.classList.remove(
+                'bg-gradient-to-r',
+                'from-blue-400',
+                'to-pink-400',
+                'text-white',
+                'shadow',
+                'hover:scale-[1.02]'
+              );
+              link.classList.add(
+                'text-gray-600',
+                'dark:text-gray-300',
+                'hover:bg-gray-100',
+                'dark:hover:bg-gray-700'
+              );
+            }
+          });
+          // Translate navbar after it is loaded
+          if (typeof translatePage === 'function') {
+            translatePage();
+          } else if (window.translatePage) {
+            window.translatePage();
+          }
+          // Add toast for Offers (desktop)
+          const offersLink = document.querySelector('#navbar-container a.coming-soon');
+          if (offersLink) {
+            offersLink.addEventListener('click', function(e) {
+              e.preventDefault();
+              showComingSoonToast();
+            });
+          }
+        });
+      // Toast for Coming Soon features (desktop)
+      function showComingSoonToast() {
+        let toast = document.getElementById('comingSoonToast');
+        if (!toast) {
+          toast = document.createElement('div');
+          toast.id = 'comingSoonToast';
+          toast.className = 'fixed bottom-16 left-1/2 transform -translate-x-1/2 w-48 bg-gradient-to-r from-blue-300 to-pink-300 text-white px-4 py-2 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-[9999] lg:w-[235px]';
+          toast.innerHTML = `<span>${typeof translate === 'function' ? translate('comingSoonFeature') : 'This feature is coming soon!'}</span>`;
+          document.body.appendChild(toast);
+        }
+        toast.classList.remove('opacity-0');
+        toast.classList.add('opacity-100');
+        setTimeout(() => {
+          toast.classList.remove('opacity-100');
+          toast.classList.add('opacity-0');
+        }, 2000);
+      }
+
+      // Global translate function for toast and other uses
+      function translate(key) {
+        const currentLang = localStorage.getItem('language') || 'en';
+        if (typeof translations !== 'undefined' && translations[currentLang] && translations[currentLang][key]) {
+            return translations[currentLang][key];
+        }
+        return key;
+    }
+    </script>
+</body>
+</html>
