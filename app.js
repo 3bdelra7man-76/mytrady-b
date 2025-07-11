@@ -14,9 +14,9 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'Public')))
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+  res.sendFile(path.join(__dirname, 'Public', 'index.html'))
 })
 app.get('/health', (req, res) => res.sendStatus(200));
 mongoose.connect(process.env.MONGODB_URI)
